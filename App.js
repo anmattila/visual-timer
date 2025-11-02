@@ -1,12 +1,12 @@
 import { NavigationContainer } from '@react-navigation/native';
-import DrawerNavigator from './src/navigation/DrawerNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import TabNavigator from './src/navigation/TabNavigation';
 
 export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <DrawerNavigator />
+        <TabNavigator />
       </NavigationContainer>
     </SafeAreaProvider>
   );
