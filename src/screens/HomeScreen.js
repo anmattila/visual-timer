@@ -1,15 +1,16 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, TextInput, Button, Alert } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, Alert, Image } from 'react-native';
 import { TimerPicker } from 'react-native-timer-picker';
 import { LinearGradient } from "expo-linear-gradient";
+import usePokemonImage from '../hooks/usePokemon';
 
 export default function HomeScreen() {
 
   const [selectedTime, setSelectedTime] = useState({ minutes: 0, seconds: 0 });
-  const [task, setTask] = useState('')
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [isTimeRunning, setIsTimeRunning] = useState(false);
+  const [task, setTask] = useState('')
   const intervalRef = useRef(null);
 
   const handleStartTimer = () => {
@@ -22,7 +23,6 @@ export default function HomeScreen() {
       return;
     }
   };
-
 
   useEffect(() => {
     if (isTimeRunning) {
@@ -40,6 +40,7 @@ export default function HomeScreen() {
     return () => clearInterval(intervalRef.current);
   }, [isTimeRunning]);
 
+  const { data, isLoading, error } = usePokemonImage(2);
 
   return (
     <View style={styles.container}>
