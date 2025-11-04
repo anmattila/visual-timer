@@ -8,11 +8,11 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SafeAreaProvider>
+      {/* <SafeAreaProvider> */}
         <NavigationContainer>
           <TabNavigator />
         </NavigationContainer>
-      </SafeAreaProvider>
+      {/* </SafeAreaProvider> */}
     </QueryClientProvider>
   );
 }

@@ -7,9 +7,10 @@ export default function usePokemonImage(id) {
     queryKey: ['pokemon-image', id],
     queryFn: () => fetchApiData(id),
     staleTime: 1000 * 60 * 90,
+    enabled: !!id,
   });
-
+  console.log('Query status:', { data }); 
   console.log('Kuva_url', data)
-  return { data, isLoading, error };
   
+  return { data, isLoading, error };
 }
