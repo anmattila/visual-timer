@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, ScrollView, TextInput, Button, Alert, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TextInput, Button, Alert, TouchableHighlight, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TimerPicker } from 'react-native-timer-picker';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -47,7 +47,7 @@ export default function TimerScreen() {
 
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {!isTimeRunning ? (
         <>
           <Text>Pick a friend!</Text>
@@ -57,9 +57,9 @@ export default function TimerScreen() {
             horizontal={true}
           >
             {pokemons.map((id) => (
-              <TouchableHighlight 
-                underlayColor={false} 
-                key={id} 
+              <TouchableHighlight
+                underlayColor={false}
+                key={id}
                 onPress={() => setSelectedPokeId(id)}>
                 <PokemonImage id={id} />
               </TouchableHighlight>
@@ -102,8 +102,9 @@ export default function TimerScreen() {
           <Text style={{ fontSize: 30 }}>{task}</Text>
           <Text style={{ fontSize: 30 }}>{secondsLeft} seconds left</Text>
         </View>
-      )}
-    </View>
+      )
+      }
+    </SafeAreaView >
   )
 }
 

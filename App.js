@@ -1,18 +1,22 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import TabNavigator from './src/navigation/TabNavigation';
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import TimerScreen from './src/screens/TimerScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
 
 export default function App() {
+
+  const Stack = createNativeStackNavigator();
   const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* <SafeAreaProvider> */}
-        <NavigationContainer>
-          <TabNavigator />
-        </NavigationContainer>
-      {/* </SafeAreaProvider> */}
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="Timer" component={TimerScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </QueryClientProvider>
   );
 }
