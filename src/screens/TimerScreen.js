@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, ScrollView, TextInput, Button, Alert, TouchableHighlight, FlatList } from 'react-native';
+import { StyleSheet, View, Button, ScrollView, TextInput, Alert, TouchableHighlight, FlatList, Image } from 'react-native';
+import { Text, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TimerPicker } from 'react-native-timer-picker';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,8 +16,9 @@ export default function TimerScreen() {
   const [secondsLeft, setSecondsLeft] = useState(0);
   const intervalRef = useRef(null);
 
-  const pokemons = [1, 4, 7, 25, 100, 150];
   const { data, isLoading, error } = usePokemonImage(selectedPokeId);
+  const pokemons = [1, 4, 7, 23, 25, 35, 37, 43, 52, 100, 116, 120, 133, 143, 150];
+  //const theme = useTheme();
 
   const handleStartTimer = () => {
     const totalTime = selectedTime.minutes * 60 + selectedTime.seconds;
@@ -45,14 +47,15 @@ export default function TimerScreen() {
     return () => clearInterval(intervalRef.current);
   }, [isTimeRunning]);
 
+  console.log("Rendering PokemonImage component id:", selectedPokeId, "data:", data ?? 'loading');
 
   return (
     <SafeAreaView style={styles.container}>
       {!isTimeRunning ? (
         <>
-          <Text>Pick a friend!</Text>
+          <Text variant="headlineMedium">Pick a friend!</Text>
           <ScrollView
-            //style={styles.scroll}
+            style={styles.scroll}
             showsHorizontalScrollIndicator={false}
             horizontal={true}
           >
@@ -60,12 +63,21 @@ export default function TimerScreen() {
               <TouchableHighlight
                 underlayColor={false}
                 key={id}
-                onPress={() => setSelectedPokeId(id)}>
-                <PokemonImage id={id} />
+                onPress={() => setSelectedPokeId(id)}
+              >
+                <Image
+                  style={{ width: 100, height: 100 }}
+                  source={{
+                    //uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+                    uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
+                  }}
+                />
               </TouchableHighlight>
             ))}
           </ScrollView>
+
           <PokemonImage id={selectedPokeId} />
+
           <TextInput
             style={styles.taskInput}
             placeholder='What is your task?'
@@ -73,7 +85,7 @@ export default function TimerScreen() {
             onChangeText={setTask}
           />
           <TimerPicker
-            padWithNItems={2}
+            padWithNItems={1}
             hideHours={true}
             disableInfiniteScroll={true}
             repeatMinuteNumbersNTimes={1}
@@ -91,19 +103,15 @@ export default function TimerScreen() {
             }}
             onDurationChange={({ minutes, seconds }) => setSelectedTime({ minutes, seconds })}
           />
-          <Button
-            title="Start timer"
-            onPress={handleStartTimer}
-          />
+          <Button onPress={handleStartTimer} title='Start timer'/>
         </>
       ) : (
         <View style={styles.timerContainer}>
           <PokemonImage id={selectedPokeId} />
-          <Text style={{ fontSize: 30 }}>{task}</Text>
           <Text style={{ fontSize: 30 }}>{secondsLeft} seconds left</Text>
+          <Text style={{ fontSize: 30 }}>{task}</Text>
         </View>
-      )
-      }
+      )}
     </SafeAreaView >
   )
 }
@@ -115,7 +123,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   scroll: {
-
+    paddingTop: 20,
   },
   taskInput: {
   },
