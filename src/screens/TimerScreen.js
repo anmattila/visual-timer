@@ -13,6 +13,7 @@ import { TimerPicker } from "react-native-timer-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import PokemonImage from "../components/PokemonImage";
 import usePokemonImages from "../hooks/usePokemonImages";
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 
 export default function TimerScreen() {
   const [selectedTime, setSelectedTime] = useState({ minutes: 0, seconds: 0 });
@@ -31,6 +32,7 @@ export default function TimerScreen() {
     if (totalTime > 0) {
       setSecondsLeft(totalTime);
       setIsTimeRunning(true);
+      activateKeepAwakeAsync(); 
     } else {
       Alert.alert("Please set a valid duration");
       return;
@@ -44,6 +46,7 @@ export default function TimerScreen() {
           if (prev <= 1) {
             clearInterval(intervalRef.current);
             setIsTimeRunning(false);
+            deactivateKeepAwake();
             return 0;
           }
           return prev - 1;
