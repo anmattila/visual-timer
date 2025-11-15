@@ -1,32 +1,38 @@
-import { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Button, ScrollView, TextInput, Alert, TouchableHighlight, FlatList, Image } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { TimerPicker } from 'react-native-timer-picker';
-import { LinearGradient } from 'expo-linear-gradient';
-import usePokemonImage from '../hooks/usePokemon';
-import PokemonImage from '../components/PokemonImage';
+import { useState, useEffect, useRef } from "react";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Alert,
+  TouchableHighlight,
+  Image,
+} from "react-native";
+import { Text, Button, TextInput, useTheme } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { TimerPicker } from "react-native-timer-picker";
+import { LinearGradient } from "expo-linear-gradient";
+import PokemonImage from "../components/PokemonImage";
+import usePokemonImages from "../hooks/usePokemonImages";
 
 export default function TimerScreen() {
-
-  const [selectedPokeId, setSelectedPokeId] = useState(1);
-  const [task, setTask] = useState('')
   const [selectedTime, setSelectedTime] = useState({ minutes: 0, seconds: 0 });
   const [isTimeRunning, setIsTimeRunning] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const intervalRef = useRef(null);
+  const [task, setTask] = useState("");
 
-  const { data, isLoading, error } = usePokemonImage(selectedPokeId);
   const pokemons = [1, 4, 7, 23, 25, 35, 37, 43, 52, 100, 116, 120, 133, 143, 150];
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const { data: images, isLoading, error } = usePokemonImages(pokemons);
   //const theme = useTheme();
 
   const handleStartTimer = () => {
     const totalTime = selectedTime.minutes * 60 + selectedTime.seconds;
     if (totalTime > 0) {
-      setSecondsLeft(totalTime)
-      setIsTimeRunning(true)
+      setSecondsLeft(totalTime);
+      setIsTimeRunning(true);
     } else {
-      Alert.alert('Please set a valid duration')
+      Alert.alert("Please set a valid duration");
       return;
     }
   };
@@ -47,42 +53,51 @@ export default function TimerScreen() {
     return () => clearInterval(intervalRef.current);
   }, [isTimeRunning]);
 
-  console.log("Rendering PokemonImage component id:", selectedPokeId, "data:", data ?? 'loading');
+  console.log("Render: ", selectedPokemon, selectedTime)
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={styles.container}
+    >
+      {/* Landing page part */}
       {!isTimeRunning ? (
         <>
-          <Text variant="headlineMedium">Pick a friend!</Text>
-          <ScrollView
-            style={styles.scroll}
-            showsHorizontalScrollIndicator={false}
-            horizontal={true}
-          >
-            {pokemons.map((id) => (
-              <TouchableHighlight
-                underlayColor={false}
-                key={id}
-                onPress={() => setSelectedPokeId(id)}
-              >
-                <Image
-                  style={{ width: 100, height: 100 }}
-                  source={{
-                    //uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
-                    uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
-                  }}
-                />
-              </TouchableHighlight>
-            ))}
-          </ScrollView>
-
-          <PokemonImage id={selectedPokeId} />
-
+          <Text variant="displaySmall">Pick a friend!</Text>
+          <View style={{ height: 140 }}>
+            <ScrollView
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+            >
+              {/* https://stackoverflow.com/questions/65520976/maping-in-scrollview-makes-horizontal-list-vertical-in-react-native */}
+              {pokemons?.map((id, i) => (
+                <TouchableHighlight
+                  underlayColor={false}
+                  key={id}
+                  onPress={() => setSelectedPokemon(images[i])}
+                >
+                  {images && images[0] ? (    // If there's images array and at least 1 image
+                    <Image
+                      style={{ width: 90, height: 90, margin: 20 }}
+                      source={{ uri: images[i] }}
+                    />
+                  ) : (
+                    <View style={{ width: 90, height: 90, margin: 20 }} />
+                  )}
+                </TouchableHighlight>
+              ))}
+            </ScrollView>
+          </View>
+          <PokemonImage
+            imageUrl={selectedPokemon || images?.[0]}   // default pokemon
+            isLoading={isLoading}
+            error={error}
+          />
           <TextInput
-            style={styles.taskInput}
-            placeholder='What is your task?'
+            placeholder="What's your plan?"
             value={task}
             onChangeText={setTask}
+            mode="outlined"
+            style={styles.taskInput}
           />
           <TimerPicker
             padWithNItems={1}
@@ -99,43 +114,67 @@ export default function TimerScreen() {
               },
               pickerItemContainer: {
                 width: 130,
+                height: 55,
               },
             }}
-            onDurationChange={({ minutes, seconds }) => setSelectedTime({ minutes, seconds })}
+            onDurationChange={({ minutes, seconds }) =>
+              setSelectedTime({ minutes, seconds })
+            }
           />
-          <Button onPress={handleStartTimer} title='Start timer'/>
+          <Button
+            onPress={handleStartTimer}
+            mode="outlined"
+            buttonColor="white"
+            style={styles.timerButton}
+          >
+            <Text variant="titleLarge">Start timer</Text>
+          </Button>
         </>
+
       ) : (
+        // Timer view
         <View style={styles.timerContainer}>
-          <PokemonImage id={selectedPokeId} />
-          <Text style={{ fontSize: 30 }}>{secondsLeft} seconds left</Text>
-          <Text style={{ fontSize: 30 }}>{task}</Text>
+          <PokemonImage imageUrl={selectedPokemon} />
+          <Text variant="headlineLarge">{secondsLeft} seconds left</Text>
+          <Text variant="headlineMedium">for {task}</Text>
+          <Button
+            onPress={() => setIsTimeRunning(false)}
+            mode="outlined"
+            buttonColor="white"
+            style={styles.timerButton}
+          >
+            <Text variant="titleLarge">Cancel</Text>
+          </Button>
         </View>
       )}
-    </SafeAreaView >
-  )
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  scroll: {
+    alignItems: "center",
+    justifyContent: "center",
     paddingTop: 20,
-  },
-  taskInput: {
+
   },
   timerContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: 40
+    //gap: 40,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  taskText: {
-    fontSize: 30,
+  timerButton: {
+    width: 140,
+    height: 55,
+    margin: 30,
+    justifyContent: "center",
   },
-  timerText: {
-    fontSize: 30,
-  }
-})
+  taskInput: {
+    width: "75%",
+    margin: 20,
+    fontSize: 20,
+  },
+  timerRunning: {},
+});

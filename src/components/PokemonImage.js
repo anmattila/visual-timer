@@ -1,23 +1,14 @@
-import { Image } from "react-native";
+import { Image, View, Text } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
-import usePokemonImage from "../hooks/usePokemon";
 
-export default function PokemonImage({ id }) {
-
-  const { data, isLoading, error } = usePokemonImage(id);
-
-  if (isLoading || !data) {
-    return <ActivityIndicator />
-  }
-
-  if (error) {
-    return <Text>Error loading image</Text>
-  }
-
+export default function PokemonImage({ imageUrl, isLoading, error }) {
   return (
-    <Image
-      style={{ width: 150, height: 150 }}
-      source={{ uri: data }} 
-    />
-  )
+    <View>
+      {isLoading && <ActivityIndicator />}
+      {error && <Text>Error loading image</Text>}
+      {imageUrl && (
+        <Image style={{ width: 150, height: 150 }} source={{ uri: imageUrl }} />
+      )}
+    </View>
+  );
 }
