@@ -94,6 +94,7 @@ export default function TimerScreen() {
             imageUrl={selectedPokemon || images?.[0]}   // default pokemon
             isLoading={isLoading}
             error={error}
+            style={{ width: 150, height: 150 }}
           />
           <TextInput
             placeholder="What's your plan?"
@@ -137,9 +138,11 @@ export default function TimerScreen() {
       ) : (
         // Timer view
         <View style={styles.timerContainer}>
-          <PokemonImage imageUrl={selectedPokemon} />
+          <PokemonImage imageUrl={selectedPokemon} style={{ width: 250, height: 250 }}/>
           <Text variant="headlineLarge">{secondsLeft} seconds left</Text>
+          {task &&
           <Text variant="headlineMedium">for {task}</Text>
+          }
           <Button
             onPress={() => setIsTimeRunning(false)}
             mode="outlined"
