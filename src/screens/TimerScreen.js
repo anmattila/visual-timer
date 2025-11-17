@@ -7,13 +7,12 @@ import {
   TouchableHighlight,
   Image,
 } from "react-native";
-import { Text, Button, TextInput, useTheme } from "react-native-paper";
+import { Text, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TimerPicker } from "react-native-timer-picker";
-import { LinearGradient } from "expo-linear-gradient";
 import PokemonImage from "../components/PokemonImage";
 import usePokemonImages from "../hooks/usePokemonImages";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
+import TimePicker from "../components/TimePicker";
 
 export default function TimerScreen() {
   const [selectedTime, setSelectedTime] = useState({ minutes: 0, seconds: 0 });
@@ -25,14 +24,13 @@ export default function TimerScreen() {
   const pokemons = [1, 4, 7, 23, 25, 35, 37, 43, 52, 100, 116, 120, 133, 143, 150];
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const { data: images, isLoading, error } = usePokemonImages(pokemons);
-  //const theme = useTheme();
 
   const handleStartTimer = () => {
     const totalTime = selectedTime.minutes * 60 + selectedTime.seconds;
     if (totalTime > 0) {
       setSecondsLeft(totalTime);
       setIsTimeRunning(true);
-      activateKeepAwakeAsync(); 
+      activateKeepAwakeAsync();
     } else {
       Alert.alert("Please set a valid duration");
       return;
@@ -46,6 +44,7 @@ export default function TimerScreen() {
           if (prev <= 1) {
             clearInterval(intervalRef.current);
             setIsTimeRunning(false);
+            Alert.alert("Time's up, good job!");
             deactivateKeepAwake();
             return 0;
           }
@@ -103,28 +102,10 @@ export default function TimerScreen() {
             mode="outlined"
             style={styles.taskInput}
           />
-          <TimerPicker
-            padWithNItems={1}
-            hideHours={true}
-            disableInfiniteScroll={true}
-            repeatMinuteNumbersNTimes={1}
-            repeatSecondNumbersNTimes={1}
-            minuteLabel="min"
-            secondLabel="sec"
-            LinearGradient={LinearGradient}
-            styles={{
-              pickerItem: {
-                fontSize: 30,
-              },
-              pickerItemContainer: {
-                width: 130,
-                height: 55,
-              },
-            }}
+          <TimePicker
             onDurationChange={({ minutes, seconds }) =>
               setSelectedTime({ minutes, seconds })
-            }
-          />
+            } />
           <Button
             onPress={handleStartTimer}
             mode="outlined"
@@ -138,10 +119,10 @@ export default function TimerScreen() {
       ) : (
         // Timer view
         <View style={styles.timerContainer}>
-          <PokemonImage imageUrl={selectedPokemon} style={{ width: 250, height: 250 }}/>
+          <PokemonImage imageUrl={selectedPokemon || images?.[0]} style={{ width: 250, height: 250 }} />
           <Text variant="headlineLarge">{secondsLeft} seconds left</Text>
           {task &&
-          <Text variant="headlineMedium">for {task}</Text>
+            <Text variant="headlineMedium">for {task}</Text>
           }
           <Button
             onPress={() => setIsTimeRunning(false)}
@@ -163,7 +144,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingTop: 20,
-
   },
   timerContainer: {
     //gap: 40,

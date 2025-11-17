@@ -1,8 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { PaperProvider, MD3LightTheme } from 'react-native-paper';
-import { useTheme } from 'react-native-paper';
+import { PaperProvider } from 'react-native-paper';
 import TimerScreen from './src/screens/TimerScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 
@@ -23,10 +22,4 @@ export default function App() {
       </QueryClientProvider>
     </PaperProvider>
   );
-}
-
-const theme = {
-  ...MD3LightTheme,
-  colors: {
-  }
 }
