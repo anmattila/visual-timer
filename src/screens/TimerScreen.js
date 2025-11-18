@@ -13,6 +13,7 @@ import PokemonImage from "../components/PokemonImage";
 import usePokemonImages from "../hooks/usePokemonImages";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import TimePicker from "../components/TimePicker";
+import AnimatedPokemon from "../components/AnimatedPokemon";
 
 export default function TimerScreen() {
   const [selectedTime, setSelectedTime] = useState({ minutes: 0, seconds: 0 });
@@ -25,11 +26,14 @@ export default function TimerScreen() {
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const { data: images, isLoading, error } = usePokemonImages(pokemons);
 
+  const [animation, setAnimation] = useState(false);
+
   const handleStartTimer = () => {
     const totalTime = selectedTime.minutes * 60 + selectedTime.seconds;
     if (totalTime > 0) {
       setSecondsLeft(totalTime);
       setIsTimeRunning(true);
+      setAnimation(true);
       activateKeepAwakeAsync();
     } else {
       Alert.alert("Please set a valid duration");
@@ -119,7 +123,11 @@ export default function TimerScreen() {
       ) : (
         // Timer view
         <View style={styles.timerContainer}>
-          <PokemonImage imageUrl={selectedPokemon || images?.[0]} style={{ width: 250, height: 250 }} />
+          <AnimatedPokemon 
+            imageUrl={selectedPokemon || images?.[0]} 
+            style={{ width: 250, height: 250 }} 
+            selectedTime={secondsLeft} 
+          />
           <Text variant="headlineLarge">{secondsLeft} seconds left</Text>
           {task &&
             <Text variant="headlineMedium">for {task}</Text>
