@@ -16,7 +16,7 @@ import  AsyncStorage from "@react-native-async-storage/async-storage";
   export const getTimerHistory = async () => {
     try {
       const historyJson = await AsyncStorage.getItem('@data_key')
-      return historyJson != null ? JSON.parse(jsonValue) : [];
+      return historyJson != null ? JSON.parse(historyJson) : [];
     } catch (err) {
       console.log("Error in getting history", err)
       return []
