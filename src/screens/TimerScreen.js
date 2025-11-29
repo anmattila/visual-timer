@@ -10,6 +10,7 @@ import {
 import { Text, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
+import { saveTimerToHistory } from "../services/storage";
 import usePokemonImages from "../hooks/usePokemonImages";
 import PokemonImage from "../components/PokemonImage";
 import TimePicker from "../components/TimePicker";
@@ -26,11 +27,8 @@ export default function TimerScreen() {
     1, 4, 7, 23, 25, 35, 37, 43, 52, 100, 116, 120, 133, 143, 150,
   ];
   const [selectedPokemon, setSelectedPokemon] = useState(null);
-  const { data: images, isLoading, error } = usePokemonImages(pokemons);
-
   const [animation, setAnimation] = useState(false);
-  const [isDatabaseOn, setIsDatabaseOn] = useState(false);
-  const onToggleSwitch = () => setIsDatabaseOn(!isDatabaseOn);
+  const { data: images, isLoading, error } = usePokemonImages(pokemons);
 
   const handleStartTimer = () => {
     const totalTime = selectedTime.minutes * 60 + selectedTime.seconds;
@@ -45,26 +43,45 @@ export default function TimerScreen() {
     }
   };
 
-  useEffect(() => {
-    if (isTimeRunning) {
-      intervalRef.current = setInterval(() => {
-        setSecondsLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(intervalRef.current);
-            setIsTimeRunning(false);
-            setTask("");
-            Alert.alert("Time's up, good job!");
-            deactivateKeepAwake();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+  const stopTimer = () => {
+    clearInterval(intervalRef.current);
+    setIsTimeRunning(false);
+    setTask("");
+    setSecondsLeft(0);
+    deactivateKeepAwake();
+  }
+
+  const handleCancelTimer = () => {
+    stopTimer();
+    Alert.alert("Timer cancelled");
+  }
+
+  const finishTimer = async () => {
+    stopTimer()
+    Alert.alert("Time's up, good job!")
+    const timerData = {
+      id: Date.now(),
+      duration: selectedTime,
+      date: new Date().toISOString()
     }
+    await saveTimerToHistory(timerData)
+  }
+
+  useEffect(() => {
+    if (!isTimeRunning)
+      return;
+    const totalTime = selectedTime.minutes * 60 + selectedTime.seconds;
+    intervalRef.current = setInterval(async() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
+          finishTimer(totalTime)
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
     return () => clearInterval(intervalRef.current);
   }, [isTimeRunning]);
-
-  console.log("Render: ", selectedPokemon, selectedTime);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -134,7 +151,7 @@ export default function TimerScreen() {
           <Text variant="headlineLarge">{secondsLeft} seconds left</Text>
           {task && <Text variant="headlineMedium">for {task}</Text>}
           <Button
-            onPress={() => setIsTimeRunning(false)}
+            onPress={handleCancelTimer}
             mode="outlined"
             buttonColor="white"
             style={styles.timerButton}

@@ -13,9 +13,9 @@ export default function App() {
     <SafeAreaProvider>
       <PaperProvider>
         <QueryClientProvider client={queryClient}>
-          <NavigationContainer>
-            <TabNavigator />
-          </NavigationContainer>
+            <NavigationContainer>
+              <TabNavigator />
+            </NavigationContainer>
         </QueryClientProvider>
       </PaperProvider>
     </SafeAreaProvider>
