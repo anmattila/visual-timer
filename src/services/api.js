@@ -8,6 +8,8 @@ export async function fetchPokemonImage(id) {
 }
 
 export async function fetchPokemonList(pokemons) {
-  const promises = await Promise.all(pokemons.map((id) => fetchPokemonImage(id)));
+  const promises = await Promise.all(
+    pokemons.map((id) => fetchPokemonImage(id))
+  );
   return promises;
 }

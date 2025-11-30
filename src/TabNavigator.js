@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TimerScreen from "./screens/TimerScreen";
 import CalendarScreen from "./screens/CalendarScreen";
-import Feather from '@expo/vector-icons/Feather';
+import Feather from "@expo/vector-icons/Feather";
 
 const Tab = createBottomTabNavigator();
 

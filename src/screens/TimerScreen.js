@@ -49,32 +49,31 @@ export default function TimerScreen() {
     setTask("");
     setSecondsLeft(0);
     deactivateKeepAwake();
-  }
+  };
 
   const handleCancelTimer = () => {
     stopTimer();
     Alert.alert("Timer cancelled");
-  }
+  };
 
   const finishTimer = async () => {
-    stopTimer()
-    Alert.alert("Time's up, good job!")
+    stopTimer();
+    Alert.alert("Time's up, good job!");
     const timerData = {
       id: Date.now(),
       duration: selectedTime,
-      date: new Date().toISOString()
-    }
-    await saveTimerToHistory(timerData)
-  }
+      date: new Date().toISOString(),
+    };
+    await saveTimerToHistory(timerData);
+  };
 
   useEffect(() => {
-    if (!isTimeRunning)
-      return;
+    if (!isTimeRunning) return;
     const totalTime = selectedTime.minutes * 60 + selectedTime.seconds;
-    intervalRef.current = setInterval(async() => {
+    intervalRef.current = setInterval(async () => {
       setSecondsLeft((prev) => {
         if (prev <= 1) {
-          finishTimer(totalTime)
+          finishTimer(totalTime);
           return 0;
         }
         return prev - 1;

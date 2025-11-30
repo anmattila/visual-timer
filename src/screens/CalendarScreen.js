@@ -1,34 +1,35 @@
-import { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { FlatList, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
-import { Calendar } from 'react-native-calendars';
+import { Calendar } from "react-native-calendars";
 import { format } from "date-fns";
-import { getAllTimerData } from '../services/storage';
+import { getAllTimerData } from "../services/storage";
 
 export default function CalendarScreen() {
-
   const [timers, setTimers] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDate, setSelectedDate] = useState("");
   const [day, setDay] = useState([]);
 
   useEffect(() => {
     const fetchTimers = async () => {
       const allData = await getAllTimerData();
-      const timerData = allData['@data_key'] ?? [];
-      setTimers(timerData)
-    }
+      const timerData = allData["@data_key"] ?? [];
+      setTimers(timerData);
+    };
     fetchTimers();
-  }, [])
+  }, []);
 
   const marked = timers.reduce((accumulator, timer) => {
-    const date = timer.date.split('T')[0]; // YYYY-MM-DD
-    accumulator[date] = { selected: true, selectedColor: 'green' };
+    const date = timer.date.split("T")[0]; // YYYY-MM-DD
+    accumulator[date] = { selected: true, selectedColor: "green" };
     return accumulator;
   }, {});
 
   const handleDayPress = (dateString) => {
-    const filtered = timers.filter(timer => timer.date.startsWith(dateString));
+    const filtered = timers.filter((timer) =>
+      timer.date.startsWith(dateString)
+    );
     setDay(filtered);
     setSelectedDate(dateString);
   };
@@ -40,7 +41,7 @@ export default function CalendarScreen() {
         style={styles.calendar}
         theme={{
           textMonthFontSize: 20,
-          arrowColor: 'black',
+          arrowColor: "black",
         }}
         hideExtraDays={true}
         current={Date.now()}
@@ -48,20 +49,21 @@ export default function CalendarScreen() {
         enableSwipeMonths={true}
         onDayPress={(day) => handleDayPress(day.dateString)}
         markedDates={marked}
-      >
-      </Calendar>
+      ></Calendar>
 
       {selectedDate ? (
         <>
-          <Text variant='headlineSmall'>Timers for {format(new Date(selectedDate), 'dd.MM.yyyy')}</Text>
+          <Text variant="headlineSmall">
+            Timers for {format(new Date(selectedDate), "dd.MM.yyyy")}
+          </Text>
           <FlatList
-            style={{ width: '50%' }}
+            style={{ width: "50%" }}
             data={day}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <View style={styles.flatlist}>
                 <Text style={{ fontSize: 16 }}>
-                  {format(new Date(item.date), 'HH:mm')}
+                  {format(new Date(item.date), "HH:mm")}
                 </Text>
                 <Text style={{ fontSize: 16 }}>
                   {item.duration.minutes}m {item.duration.seconds}s
@@ -72,7 +74,7 @@ export default function CalendarScreen() {
         </>
       ) : null}
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -85,16 +87,16 @@ const styles = StyleSheet.create({
   calendar: {
     width: 350,
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: "black",
     borderRadius: 10,
     padding: 10,
-    marginBottom: 15
+    marginBottom: 15,
   },
   flatlist: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'lightgrey',
+    borderBottomColor: "lightgrey",
   },
 });

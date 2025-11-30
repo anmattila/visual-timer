@@ -6,9 +6,7 @@ export default function PokemonImage({ imageUrl, isLoading, error, style }) {
     <>
       {isLoading && <ActivityIndicator />}
       {error && <Text>Error loading image</Text>}
-      {imageUrl && (
-        <Image style={style} source={{ uri: imageUrl }} />
-      )}
+      {imageUrl && <Image style={style} source={{ uri: imageUrl }} />}
     </>
   );
 }

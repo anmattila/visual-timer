@@ -1,14 +1,18 @@
-import { useEffect } from 'react';
-import MaskedView from '@react-native-masked-view/masked-view';
-import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from 'react-native-reanimated';
-import PokemonImage from './PokemonImage';
+import { useEffect } from "react";
+import MaskedView from "@react-native-masked-view/masked-view";
+import Animated, {
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+  Easing,
+} from "react-native-reanimated";
+import PokemonImage from "./PokemonImage";
 
 export default function AnimatedPokemon({ imageUrl, selectedTime, style }) {
-
   const sv = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    height: sv.value * style.height
+    height: sv.value * style.height,
   }));
 
   useEffect(() => {
@@ -24,14 +28,18 @@ export default function AnimatedPokemon({ imageUrl, selectedTime, style }) {
     <MaskedView
       style={{ width: style.width, height: style.height }}
       maskElement={
-        <Animated.View style={[{
-          width: '100%',
-          backgroundColor: 'white',
-        }, animatedStyle]}
+        <Animated.View
+          style={[
+            {
+              width: "100%",
+              backgroundColor: "white",
+            },
+            animatedStyle,
+          ]}
         />
       }
     >
       <PokemonImage imageUrl={imageUrl} style={style} />
-    </MaskedView >
-  )
+    </MaskedView>
+  );
 }
