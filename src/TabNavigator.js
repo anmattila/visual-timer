@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TimerScreen from "./screens/TimerScreen";
-import SettingsScreen from "./screens/SettingsScreen";
 import CalendarScreen from "./screens/CalendarScreen";
 import Feather from '@expo/vector-icons/Feather';
 
@@ -24,8 +23,6 @@ export default function TabNavigator() {
             iconName = "clock";
           } else if (route.name === "Calendar") {
             iconName = "calendar";
-          } else if (route.name === "Settings") {
-            iconName = "settings"
           }
           return (
             <Feather
@@ -39,7 +36,6 @@ export default function TabNavigator() {
     >
       <Tab.Screen name="Timer" component={TimerScreen} />
       <Tab.Screen name="Calendar" component={CalendarScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
