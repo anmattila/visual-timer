@@ -28,9 +28,7 @@ export default function CalendarScreen() {
   }, {});
 
   const handleDayPress = (dateString) => {
-    console.log("Selected date:", dateString);
     const filtered = timers.filter(timer => timer.date.startsWith(dateString));
-    console.log("Filtered timers:", filtered);
     setDay(filtered);
     setSelectedDate(dateString);
   };
@@ -41,7 +39,7 @@ export default function CalendarScreen() {
       <Calendar
         style={styles.calendar}
         theme={{
-          textMonthFontSize: 26,
+          textMonthFontSize: 20,
           arrowColor: 'black',
         }}
         hideExtraDays={true}
@@ -55,17 +53,19 @@ export default function CalendarScreen() {
 
       {selectedDate ? (
         <>
-          <Text style={styles.header}>Timers for {format(new Date(selectedDate), 'dd.MM.yyyy')}</Text>
+          <Text variant='headlineSmall'>Timers for {format(new Date(selectedDate), 'dd.MM.yyyy')}</Text>
           <FlatList
-            style={{width: '100%'}}
+            style={{ width: '50%' }}
             data={day}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <View style={styles.row}>
-                <Text style={styles.leftColumn}>
+              <View style={styles.flatlist}>
+                <Text style={{ fontSize: 16 }}>
                   {format(new Date(item.date), 'HH:mm')}
                 </Text>
-                <Text style={styles.rightColumn}>{item.duration.minutes}m {item.duration.seconds}s</Text>
+                <Text style={{ fontSize: 16 }}>
+                  {item.duration.minutes}m {item.duration.seconds}s
+                </Text>
               </View>
             )}
           />
@@ -87,35 +87,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 10,
-    padding: 20,
+    padding: 10,
+    marginBottom: 15
   },
-  itemContainer: {
-    padding: 12,
+  flatlist: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  details: {
-    fontSize: 14,
-    color: '#555',
-  },
-  row: {
-    flexDirection: 'row',       // vasen → oikea
-    justifyContent: 'space-between', // levittää sarakkeet
-    paddingVertical: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  leftColumn: {
-    flex: 1,
-    fontWeight: '500',
-  },
-  rightColumn: {
-    flex: 1,
-    textAlign: 'right',
+    borderBottomColor: 'lightgrey',
   },
 });
