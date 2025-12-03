@@ -1,6 +1,11 @@
 # Visual Timer App
 This is my project for Mobile Programmin course. The app is a countdown timer where you can choose a Pokemon to get color when timer runs in seconds. It offers better visual indication of time while your screen stays active. Completed timers are saved to calendar. Build with Expo, the app is designed to be cross-platform.
 
+<img src="./assets/Screenshot1.jpg" alt="Landing page screenshot" width="300"/> 
+<img src="./assets/Screenshot2.jpg" alt="Time running screenshot" width="300"/> 
+<img src="./assets/Screenshot4.jpg" alt="Calendar page screenshot" width="300"/>
+
+
 ## Tech Stack
 - **Framework**: React Native and Expo
 - **Navigation**: React Navigation
